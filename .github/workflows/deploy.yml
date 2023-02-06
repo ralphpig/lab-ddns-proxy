@@ -1,0 +1,42 @@
+name: Deploy
+
+on:
+    push:
+        branches: ["main"]
+    pull_request:
+        branches: ["main"]
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        env:
+          ROOT_DOMAIN: ${{ vars.ROOT_DOMAIN }}
+          PROXY_DOMAIN: ${{ vars.PROXY_DOMAIN }}
+          DNS_TARGET_PASS: ${{ vars.DNS_TARGET_PASS }}
+          DNS_TARGET_IP: ${{ vars.DNS_TARGET_IP }}
+          LETSENCRYPT_EMAIL: ${{ vars.LETSENCRYPT_EMAIL }}
+
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                submodules: true
+
+            - name: Generate docker-compose
+              run: |
+                  envsubst < docker-compose.template.yml > docker-compose.yml
+
+            - name: Connect SSH Agent
+              uses: webfactory/ssh-agent@v0.7.0
+              with:
+                ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+            - name: Disable host key verification
+              run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
+
+            - name: Deploy
+              run: |
+                docker compose up -d --build --remove-orphans --force-recreate
+                docker compose logs certbot
+              env:
+                DOCKER_HOST: "ssh://${{ vars.DEPLOY_USERNAME }}@${{ vars.DEPLOY_HOST }}"
+

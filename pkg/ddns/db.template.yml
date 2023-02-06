@@ -1,0 +1,3 @@
+target:
+    pass: ${DNS_TARGET_PASS}
+    A: ${DNS_TARGET_IP}
