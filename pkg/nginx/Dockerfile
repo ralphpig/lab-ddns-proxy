@@ -15,3 +15,6 @@ EXPOSE 34197
 
 # project zomboid
 EXPOSE 16261
+
+# starbound
+EXPOSE 21025

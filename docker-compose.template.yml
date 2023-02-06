@@ -52,6 +52,7 @@ services:
             - 443:443
             - 34197:34197/udp
             - 16261:16261/udp
+            - 21025:21025/tcp
         restart: always
         volumes:
             - /etc/letsencrypt:/etc/letsencrypt:ro
