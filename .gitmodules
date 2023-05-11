@@ -1,4 +1,4 @@
 [submodule "pkg/ddns/minidyndns"]
 	path = pkg/ddns/minidyndns
-	url = https://github.com/ralphpig/minidyndns.git
-	branch = feat/trusted-proxy
+	url = https://github.com/arkanis/minidyndns.git
+	branch = master
