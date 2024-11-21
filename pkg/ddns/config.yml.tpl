@@ -1,6 +1,6 @@
 # The domain hosted by this DNS server. It will only reply to requests
 # regarding subdomains of this domain. Everything is ignored completely.
-domain: ${ROOT_DOMAIN}
+domain: ${PROXY_DOMAIN}
 
 # Time to live (TTL) of replies send by the DNS server. This is the time
 # in seconds an reply stays valid. The higher the value the longer clients
@@ -11,7 +11,7 @@ ttl: 60
 
 # IP and port the DNS server runs on
 dns:
-    port: 5300
+    port: 53
     ip: 0.0.0.0
     # Set to true to log hex dumps of every incomming DNS packet (for debugging).
     #dump_packets: true

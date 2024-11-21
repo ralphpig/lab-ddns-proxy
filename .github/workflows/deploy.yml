@@ -7,34 +7,46 @@ on:
 jobs:
     deploy:
         runs-on: ubuntu-latest
-        env:
-          ROOT_DOMAIN: ${{ vars.ROOT_DOMAIN }}
-          PROXY_DOMAIN: ${{ vars.PROXY_DOMAIN }}
-          DNS_TARGET_PASS: ${{ vars.DNS_TARGET_PASS }}
-          DNS_TARGET_IP: ${{ vars.DNS_TARGET_IP }}
-          LETSENCRYPT_EMAIL: ${{ vars.LETSENCRYPT_EMAIL }}
-
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
               with:
                 submodules: true
 
-            - name: Generate docker-compose
+            - name: Evaluate Templates
+              env:
+                PROXY_DOMAIN: ${{ secrets.PROXY_DOMAIN }} # example.com
+                PROXY_HOST: ${{ secrets.PROXY_HOST }} # proxy.example.com
+                CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+                CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+                DDNS_LAB1_PASS: ${{ secrets.DDNS_LAB1_PASS }}
+                DDNS_LAB1_IP: ${{ secrets.DDNS_LAB1_IP }}
+                DDNS_LAB2_PASS: ${{ secrets.DDNS_LAB2_PASS }}
+                DDNS_LAB2_IP: ${{ secrets.DDNS_LAB2_IP }}
+                PROXY_LAB2_DOMAIN: ${{ secrets.PROXY_LAB2_DOMAIN }} 
               run: |
-                  envsubst < docker-compose.template.yml > docker-compose.yml
+                  envsubst < compose.yml.tpl > compose.yml
+                  envsubst < pkg/traefik/traefik.yml.tpl > pkg/traefik/traefik.yml
+                  envsubst < pkg/traefik/config/proxy.yml.tpl > pkg/traefik/config/proxy.yml
+                  envsubst < pkg/ddns/config.yml.tpl > pkg/ddns/config.yml
+                  envsubst < pkg/ddns/db.yml.tpl > pkg/ddns/db.yml
 
-            - name: Connect SSH Agent
-              uses: webfactory/ssh-agent@v0.7.0
+            - name: Push files to DEPLOY_HOST
+              uses: appleboy/scp-action@v0.1.7
               with:
-                ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
-
-            - name: Disable host key verification
-              run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
+                host: ${{ secrets.DEPLOY_HOST }}
+                username: ${{ secrets.DEPLOY_USERNAME }}
+                key: ${{ secrets.DEPLOY_SSH_KEY }}
+                rm: true
+                source: "."
+                target: "/opt/lab-ddns-proxy"
 
             - name: Deploy
-              run: |
-                docker compose up -d --build --remove-orphans --force-recreate
-                docker compose logs certbot
-              env:
-                DOCKER_HOST: "ssh://${{ vars.DEPLOY_USERNAME }}@${{ vars.DEPLOY_HOST }}"
+              uses: appleboy/ssh-action@v1.2.0
+              with:
+                host: ${{ secrets.DEPLOY_HOST }}
+                username: ${{ secrets.DEPLOY_USERNAME }}
+                key: ${{ secrets.DEPLOY_SSH_KEY }}
+                script: |
+                  cd /opt/lab-ddns-proxy
+                  docker compose up -d --build --remove-orphans --force-recreate
 

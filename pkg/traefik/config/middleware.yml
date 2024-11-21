@@ -1,0 +1,7 @@
+http:
+  # @file middleware
+  middlewares:
+    https_redirect:
+      redirectScheme:
+        scheme: https
+        permanent: true
