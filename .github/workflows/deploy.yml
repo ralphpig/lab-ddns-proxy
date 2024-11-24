@@ -22,13 +22,13 @@ jobs:
                 DDNS_LAB1_IP: ${{ secrets.DDNS_LAB1_IP }}
                 DDNS_LAB2_PASS: ${{ secrets.DDNS_LAB2_PASS }}
                 DDNS_LAB2_IP: ${{ secrets.DDNS_LAB2_IP }}
-                PROXY_LAB2_DOMAIN: ${{ secrets.PROXY_LAB2_DOMAIN }} 
+                PROXY_LAB2_DOMAIN: ${{ secrets.PROXY_LAB2_DOMAIN }}
               run: |
-                  envsubst < compose.yml.tpl > compose.yml
-                  envsubst < pkg/traefik/traefik.yml.tpl > pkg/traefik/traefik.yml
-                  envsubst < pkg/traefik/config/proxy.yml.tpl > pkg/traefik/config/proxy.yml
-                  envsubst < pkg/ddns/config.yml.tpl > pkg/ddns/config.yml
-                  envsubst < pkg/ddns/db.yml.tpl > pkg/ddns/db.yml
+                envsubst < compose.yml.tpl > compose.yml
+                envsubst < pkg/traefik/traefik.yml.tpl > pkg/traefik/traefik.yml
+                envsubst < pkg/traefik/config/proxy.yml.tpl > pkg/traefik/config/proxy.yml
+                envsubst < pkg/ddns/config.yml.tpl > pkg/ddns/config.yml
+                envsubst < pkg/ddns/db.yml.tpl > pkg/ddns/db.yml
 
             - name: Push files to DEPLOY_HOST
               uses: appleboy/scp-action@v0.1.7
@@ -47,6 +47,6 @@ jobs:
                 username: ${{ secrets.DEPLOY_USERNAME }}
                 key: ${{ secrets.DEPLOY_SSH_KEY }}
                 script: |
-                  cd /opt/lab-ddns-proxy
-                  docker compose up -d --build --remove-orphans --force-recreate
+                    cd /opt/lab-ddns-proxy
+                    docker compose up -d --build --remove-orphans --force-recreate
 
