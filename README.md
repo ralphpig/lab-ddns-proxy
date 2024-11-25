@@ -35,12 +35,14 @@ This was created to hide/obfuscate my home wan ip to users of servers on my home
 
 `DDNS_LAB1_PASS`
   - DDNS Password for update lab1 IP
+
 `DDNS_LAB1_IP`
   - DDNS Initial IP for lab1
   - Will likely overwrite IP to an old IP. Will figure out later
 
 `DDNS_LAB2_PASS`
   - DDNS Password for update lab2 IP
+
 `DDNS_LAB2_IP`
   - DDNS Initial IP for lab2
   - Will likely overwrite IP to an old IP. Will figure out later
@@ -50,5 +52,6 @@ This was created to hide/obfuscate my home wan ip to users of servers on my home
 `PROXY_LAB1_DOMAIN`
   - Domain for HTTP routing to lab1
   - Not used right now
+
 `PROXY_LAB2_DOMAIN`
   - Domain for HTTP routing to lab2
