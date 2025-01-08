@@ -35,7 +35,9 @@ services:
         ports:
           - "80:80"                                          # HTTP (used for automatic redirection)
           - "443:443"                                        # HTTPS
-          - "34197:34197/udp"
+          - "34197:34197/udp"                                # factorio
+          - "2456:2456/udp"                                  # valheim
+          - "2457:2457/udp"                                  # valheim
         volumes:
           - "/var/run/docker.sock:/var/run/docker.sock:ro"   # Allow Traefik to interact with Docker
           - "/etc/letsencrypt:/letsencrypt"                  # Store SSL certificates
