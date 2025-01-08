@@ -21,8 +21,24 @@ udp:
       service: proxy_factorio
       entrypoints:
         - udp_factorio
+    proxy_valheim_1:
+      service: proxy_valheim_1
+      entrypoints:
+        - udp_valheim_1
+    proxy_valheim_2:
+      service: proxy_valheim_2
+      entrypoints:
+        - udp_valheim_2
   services:
     proxy_factorio:
       loadBalancer:
         servers:
           - address: lab1.${PROXY_DOMAIN}:34197
+    proxy_valheim_1:
+      loadBalancer:
+        servers:
+          - address: lab1.${PROXY_DOMAIN}:2456
+    proxy_valheim_2:
+      loadBalancer:
+        servers:
+          - address: lab1.${PROXY_DOMAIN}:2457

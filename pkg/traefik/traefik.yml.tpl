@@ -15,6 +15,10 @@ entryPoints:
     address: ":443/tcp"
   udp_factorio:
     address: ":34197/udp"
+  udp_valheim_1:
+    address: ":2456/udp"
+  udp_valheim_2:
+    address: ":2457/udp"
 
 certificatesResolvers:
   cloudflare:
